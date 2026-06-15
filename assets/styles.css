@@ -38,7 +38,14 @@ h1,h2,h3,h4{line-height:1.18;letter-spacing:-.012em;color:var(--ink)}
 .hub-hero .kicker{font-family:var(--mono);font-size:.82rem;color:var(--accent);letter-spacing:.04em;margin:0 0 18px}
 .hub-hero h1{font-family:var(--serif);font-size:clamp(2.4rem,6vw,3.6rem);font-weight:600;letter-spacing:-.02em;margin:0 0 22px;max-width:16ch}
 .hub-hero p{font-size:1.2rem;color:var(--ink-soft);max-width:60ch;margin:0 0 14px}
-.hub-hero .who{font-size:1rem;color:var(--muted)}
+.hub-hero .who{display:flex;flex-direction:column;gap:9px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.who-name a{font-family:var(--serif);font-size:1.18rem;font-weight:600;color:var(--ink)}
+.who-name a:hover{color:var(--accent-ink)}
+.who-role{font-size:.94rem;color:var(--muted)}
+.who-links{display:flex;gap:9px;flex-wrap:wrap;margin-top:3px}
+.who-links a{font-family:var(--mono);font-size:.8rem;color:var(--accent-ink);background:var(--accent-weak);
+  padding:5px 13px;border-radius:20px;border:1px solid transparent;transition:border-color .12s}
+.who-links a:hover{border-color:var(--accent);text-decoration:none}
 .hub-section{padding:36px 0 70px}
 .hub-section h2{font-size:1.05rem;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);font-weight:600;
   margin:0 0 22px;padding-bottom:10px;border-bottom:1px solid var(--line)}
