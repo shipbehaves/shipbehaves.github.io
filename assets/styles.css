@@ -143,8 +143,10 @@ h3.sub{font-size:1.12rem;margin:30px 0 6px}
 /* tables */
 table.data{border-collapse:collapse;width:100%;font-size:.9rem}
 table.data th,table.data td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
-table.data thead th{color:var(--faint);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line-strong)}
+table.data thead th{color:var(--faint);font-weight:600;font-size:.8rem;letter-spacing:.01em;border-bottom:1px solid var(--line-strong);white-space:nowrap}
 table.data td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+#family-gate,#crosswalk-table{overflow-x:auto}
+.frag{font-family:var(--mono);font-size:.68rem;color:var(--faint);display:block;margin-top:4px}
 table.data tbody tr:hover{background:var(--accent-weak)}
 .gate-pill{font-family:var(--mono);font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
 .gate-publish{background:var(--pass-bg);color:var(--pass)}

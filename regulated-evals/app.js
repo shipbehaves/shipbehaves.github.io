@@ -159,10 +159,14 @@ function renderFamilyGate() {
   tbl.innerHTML = `<thead><tr><th>Judgment family</th><th>panel↔A α</th><th>raw</th><th>fail-recall</th><th>n</th><th>gate</th></tr></thead>`;
   const tb = el("tbody");
   fams.forEach(f => {
-    const g = f.gate.toLowerCase();
-    const cls = g.includes("publish") ? "gate-publish" : g.includes("tentative") ? "gate-tentative" : "gate-deploy";
+    const g = f.gate.replace(/\*\*/g, "").toLowerCase();
+    let band = "—", cls = "";
+    if (g.includes("publish")) { band = "publish"; cls = "gate-publish"; }
+    else if (g.includes("tentative")) { band = "tentative"; cls = "gate-tentative"; }
+    else if (g.includes("do not deploy") || g.includes("do-not-deploy")) { band = "do-not-deploy"; cls = "gate-deploy"; }
+    const frag = g.includes("prevalence-fragile") ? `<span class="frag">α prevalence-fragile (minority &lt; 5)</span>` : "";
     tb.appendChild(el("tr", "", `<td>${f.family}</td><td class="num">${f.alpha}</td><td class="num">${f.raw}</td>` +
-      `<td class="num">${f.fail_recall}</td><td class="num">${f.n}</td><td><span class="gate-pill ${cls}">${f.gate}</span></td>`));
+      `<td class="num">${f.fail_recall}</td><td class="num">${f.n}</td><td><span class="gate-pill ${cls}">${band}</span>${frag}</td>`));
   });
   tbl.appendChild(tb); host.innerHTML = ""; host.appendChild(tbl);
 }
