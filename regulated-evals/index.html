@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>regulated-evals — Trustworthy-AI Scorecard for frontier models in regulated finance</title>
+<title>regulated-evals · Trustworthy-AI Scorecard for frontier models in regulated finance</title>
 <meta name="description" content="A regulation-anchored, calibration-validated, reproducible trustworthiness scorecard of ten frontier and open-weight models in regulated finance. No model is bare-ready." />
-<meta property="og:title" content="regulated-evals — Trustworthy-AI Scorecard (finance)" />
+<meta property="og:title" content="regulated-evals · Trustworthy-AI Scorecard (finance)" />
 <meta property="og:description" content="Ten models graded against preregistered, law-derived bars; judgment scored by a cross-family panel calibrated to a human rater. None is bare-ready." />
 <meta property="og:type" content="article" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -34,9 +34,9 @@
     <div class="abstract">
       <span class="lab">Abstract</span>
       We ask a narrow, falsifiable question: is any current language model ready, <em>out of the box</em>,
-      to behave safely in regulated finance? We grade ten models — three frontier-closed (Claude Opus 4.8,
-      GPT-5, Gemini 2.5 Pro), three frontier-open (DeepSeek-V3.1, Mistral-Large, Qwen-2.5-72B) and four small
-      open-weight baselines — across two deployment profiles, against <strong>preregistered</strong> floor/target
+      to behave safely in regulated finance? We grade ten models (three frontier-closed: Claude Opus 4.8,
+      GPT-5, Gemini 2.5 Pro; three frontier-open: DeepSeek-V3.1, Mistral-Large, Qwen-2.5-72B; and four small
+      open-weight baselines) across two deployment profiles, against <strong>preregistered</strong> floor/target
       bars derived from the EU AI Act, FINMA guidance, DORA, the revised Swiss FADP and banking-secrecy law.
       Judgment cases (route-vs-advise, fabrication-vs-illustration, prompt-injection) are scored by a
       <strong>cross-family LLM panel</strong> that we first calibrate against a blind human rater. Every verdict
@@ -58,7 +58,7 @@
   <section class="block" id="result">
     <h2><span class="secno">1</span> The scorecard</h2>
     <p class="lede">Each cell is one requirement for one model, on one deployment profile, scored <b>absolutely</b>
-      against its preregistered bar — never on a curve. A single Critical failure means <b>Not-ready</b>; it cannot
+      against its preregistered bar, never on a curve. A single Critical failure means <b>Not-ready</b>; it cannot
       be averaged away. <b>Click any cell</b> to read the actual scenarios and the model's own responses behind the verdict.</p>
     <div class="figure">
       <div class="controls" id="profile-toggle"><span class="ctl-label">profile</span></div>
@@ -83,7 +83,7 @@
 
   <section class="block" id="calibration">
     <h2><span class="secno">3</span> Why trust the grader?</h2>
-    <p class="lede">Judgment cases are graded by an LLM panel — but only because it first <b>cleared a preregistered
+    <p class="lede">Judgment cases are graded by an LLM panel, but only because it first <b>cleared a preregistered
       bar against a human rater</b> on a 150-item blind pack. Two independent humans agree with each other far more
       than either agrees with the old rule grader: the rule was the outlier, which is the empirical case for the panel.</p>
     <div class="figure">
@@ -92,7 +92,7 @@
     </div>
     <h3 class="sub">Per-family deployment gate</h3>
     <p class="lede small">Panel-vs-human α per judgment family against the preregistered bands. α is prevalence-fragile
-      where one class is rare — read raw agreement and fail-recall alongside it.</p>
+      where one class is rare; read raw agreement and fail-recall alongside it.</p>
     <div class="figure"><div id="family-gate"></div>
       <p class="figcap"><b>Table 1.</b> Preregistered per-family gate: α ≥ 0.80 publish · 0.667–0.80 tentative · &lt; 0.667 do-not-deploy.</p>
     </div>
@@ -100,7 +100,7 @@
 
   <section class="block" id="crosswalk">
     <h2><span class="secno">4</span> Regulation cross-walk</h2>
-    <p class="lede">Every requirement is anchored to named regulation and gates differently by deployment profile —
+    <p class="lede">Every requirement is anchored to named regulation and gates differently by deployment profile:
       an anonymous public bot must refuse all personal data; an authenticated assistant may serve the logged-in user
       but never another.</p>
     <div class="figure"><div id="crosswalk-table"></div>
@@ -116,16 +116,16 @@
       <div><h3>preregistered</h3><p>Floor/target are fixed <em>before</em> a model is run, never tuned to a result;
         each card stamps its thresholds, dataset version and run date.</p></div>
       <div><h3>reproducible</h3><p>Every verdict re-derives from a frozen transcript at zero model cost
-        (<code>make repro</code>) — judge majorities re-derive from cached per-judge votes, offline.</p></div>
-      <div><h3>honest</h3><p>No single 0–100 score. Readiness is a structured signal, not approval; a <code>✗</code>
-        sizes the system wrap a deployer must build — it is not "a bad model".</p></div>
+        (<code>make repro</code>); judge majorities re-derive from cached per-judge votes, offline.</p></div>
+      <div><h3>honest</h3><p>No single 0-100 score. Readiness is a structured signal, not approval; a <code>✗</code>
+        sizes the system wrap a deployer must build; it is not "a bad model".</p></div>
     </div>
   </section>
 </main>
 
 <footer class="site">
   <div class="col">
-    <p><strong>Model-behavior cards — not a conformity assessment, not legal advice.</strong> A green result is
+    <p><strong>Model-behavior cards, not a conformity assessment, not legal advice.</strong> A green result is
       model-layer only and does not certify a deployed system. All scenarios are synthetic.</p>
     <p><a href="/">← shipbehaves / research</a> ·
       <a href="https://github.com/shipbehaves/regulated-evals">code</a> ·

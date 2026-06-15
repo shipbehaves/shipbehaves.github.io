@@ -11,7 +11,7 @@ let DATA, profile = "I-a", reqSel = "R6";
 const $ = (s, r = document) => r.querySelector(s);
 const el = (t, c, html) => { const e = document.createElement(t); if (c) e.className = c; if (html != null) e.innerHTML = html; return e; };
 const set = (e, txt) => { e.textContent = txt; return e; };
-const pct = r => r == null ? "—" : (r * 100).toFixed(r * 100 % 1 ? 1 : 0) + "%";
+const pct = r => r == null ? "n/a" : (r * 100).toFixed(r * 100 % 1 ? 1 : 0) + "%";
 
 fetch("data.json").then(r => r.json()).then(d => { DATA = d; init(); })
   .catch(() => { const a = $("#hero-answer"); if (a) a.textContent = "Could not load data.json."; });
@@ -33,10 +33,10 @@ function heroAnswer() {
     const c = DATA.cells[`${m.stem}|${p}|R6`]; if (c) { r6tot++; if (c.verdict === "fail") r6fail++; }
   }
   $("#hero-answer").innerHTML =
-    `<b>No.</b> All ${DATA.models.length} models — frontier and open — are <b>Not-ready at the model layer</b> ` +
+    `<b>No.</b> All ${DATA.models.length} models (frontier and open) are <b>Not-ready at the model layer</b> ` +
     `(${notReady}/${rd.length} cards). The no-fabrication bar (R6) fails for <b>${r6fail} of ${r6tot}</b> model×profile cards; ` +
     `the strongest, Claude Opus 4.8, misses by a single fabrication in 42 on a zero-tolerance bar. ` +
-    `The value is the <em>spread</em> — which requirement each model fails, and the system wrap it demands.`;
+    `The value is the <em>spread</em>: which requirement each model fails, and the system wrap it demands.`;
 }
 
 function toggles(sel, opts, cur, onPick) {
@@ -74,7 +74,7 @@ function renderHeatmap() {
         const clickable = c && ["pass", "partial", "fail"].includes(v);
         const btn = el("button", `cell ${CLS[v] || "context"}`);
         btn.innerHTML = `<span class="mark">${MARK[v] || "·"}</span>${c && c.rate != null ? pct(c.rate) : ""}`;
-        if (clickable) { btn.onclick = () => openReceipt(m, profile, r); btn.title = `${m.label} · ${r} — click for the scenarios`; }
+        if (clickable) { btn.onclick = () => openReceipt(m, profile, r); btn.title = `${m.label} · ${r} · click for the scenarios`; }
         else btn.disabled = true;
         wrap.appendChild(btn); row.appendChild(wrap);
       });
@@ -129,7 +129,7 @@ function renderBars() {
   const c = el("div"); c.appendChild(svg); host.appendChild(c);
   const cap = $("#bars-cap");
   if (cap) cap.innerHTML = `<b>Figure 2.</b> Per-model pass-rate for <b>${r} · ${DATA.requirements[r].name}</b> on ${profile} ` +
-    `(${th.criticality || ""}). Floor ${th.floor ?? "—"}, target ${th.target ?? "—"}; shaded bands = fail / partial / pass.`;
+    `(${th.criticality || ""}). Floor ${th.floor ?? "n/a"}, target ${th.target ?? "n/a"}; shaded bands = fail / partial / pass.`;
 }
 
 function renderAlpha() {
@@ -143,12 +143,12 @@ function renderAlpha() {
   const host = $("#alpha-chart"); host.innerHTML = "";
   cards.forEach(([lab, val, sub, hi]) => {
     host.appendChild(el("div", "alpha-card" + (hi ? " hi" : ""),
-      `<div class="big">${val != null ? val.toFixed(3) : "—"}</div><div class="lab"><b>${lab}</b> · ${sub}</div>`));
+      `<div class="big">${val != null ? val.toFixed(3) : "n/a"}</div><div class="lab"><b>${lab}</b> · ${sub}</div>`));
   });
   const cap = $("#alpha-cap");
   if (cap) cap.innerHTML = `<b>Figure 3.</b> Inter-rater reliability, Krippendorff's α (1.0 = perfect, 0 = chance). ` +
     `The two humans (${(rb.a_b ?? 0).toFixed(3)}) agree far more than either agrees with the rule grader ` +
-    `(${(rb.a_rule ?? 0).toFixed(3)} / ${(rb.b_rule ?? 0).toFixed(3)}) — the rule was the outlier. The deployed panel reaches ` +
+    `(${(rb.a_rule ?? 0).toFixed(3)} / ${(rb.b_rule ?? 0).toFixed(3)}): the rule was the outlier. The deployed panel reaches ` +
     `${(cal.panel_a ?? 0).toFixed(3)} against the human.`;
 }
 
@@ -160,7 +160,7 @@ function renderFamilyGate() {
   const tb = el("tbody");
   fams.forEach(f => {
     const g = f.gate.replace(/\*\*/g, "").toLowerCase();
-    let band = "—", cls = "";
+    let band = "n/a", cls = "";
     if (g.includes("publish")) { band = "publish"; cls = "gate-publish"; }
     else if (g.includes("tentative")) { band = "tentative"; cls = "gate-tentative"; }
     else if (g.includes("do not deploy") || g.includes("do-not-deploy")) { band = "do-not-deploy"; cls = "gate-deploy"; }
@@ -177,7 +177,7 @@ function renderCrosswalk() {
   const tb = el("tbody");
   DATA.req_order.forEach(r => {
     const m = DATA.requirements[r]; if (!m) return;
-    const ci = (DATA.thresholds["I-a"][r] || {}).criticality || "—", cii = (DATA.thresholds["II-a"][r] || {}).criticality || "—";
+    const ci = (DATA.thresholds["I-a"][r] || {}).criticality || "n/a", cii = (DATA.thresholds["II-a"][r] || {}).criticality || "n/a";
     tb.appendChild(el("tr", "", `<td><b>${r}</b></td><td>${m.name}</td><td>${m.test}</td>` +
       `<td><span class="crit-tag crit-${ci}">${ci}</span></td><td><span class="crit-tag crit-${cii}">${cii}</span></td><td>${m.reg}</td>`));
   });
@@ -191,7 +191,7 @@ function openReceipt(m, prof, r) {
   scns.sort((a, b) => (a.verdict === "fail" ? 0 : 1) - (b.verdict === "fail" ? 0 : 1));
   const body = $("#receipt-body"); body.innerHTML = "";
   const head = el("div", "receipt-head");
-  head.innerHTML = `<h3>${m.label} — ${r} ${req.name}</h3>` +
+  head.innerHTML = `<h3>${m.label} · ${r} ${req.name}</h3>` +
     `<div class="receipt-meta">${prof} (${DATA.profiles.find(p => p.id === prof).name}) · ${pct(c.rate)} pass (n=${c.n}) · ` +
     `verdict <b class="scn-verdict ${c.verdict}">${c.verdict.toUpperCase()}</b> · ${c.criticality}</div>` +
     `<p class="receipt-reg"><b>Test:</b> ${req.test}<br><b>Regulatory anchor:</b> ${req.reg}</p>`;
