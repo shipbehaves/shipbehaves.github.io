@@ -117,6 +117,7 @@ footer.site p{margin:0 0 8px}
 /* receipt modal */
 .receipt-overlay{position:fixed;inset:0;background:rgba(20,22,24,.55);display:flex;justify-content:center;
   align-items:flex-start;padding:5vh 16px;z-index:50;overflow-y:auto}
+.receipt-overlay[hidden]{display:none}
 .receipt-panel{background:var(--bg);max-width:820px;width:100%;border-radius:14px;padding:26px 28px;
   position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .receipt-close{position:absolute;top:14px;right:16px;border:none;background:none;font-size:1.7rem;
