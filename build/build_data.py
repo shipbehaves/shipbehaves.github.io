@@ -169,7 +169,7 @@ def main():
         "calibration": parse_calibration(),
         "scenarios": scenarios,
     }
-    out = os.path.join(HERE, "assets", "data.json")
+    out = os.path.join(HERE, "regulated-evals", "data.json")
     json.dump(data, open(out, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     size = os.path.getsize(out) / 1024
     print(f"wrote {os.path.relpath(out)}  ({size:.0f} KB)")
