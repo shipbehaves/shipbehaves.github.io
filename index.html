@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>regulated-evals — Trustworthy-AI Scorecard for frontier models in regulated finance</title>
+<meta name="description" content="A reproducible, regulation-anchored trustworthiness scorecard for frontier and open-weight models in regulated finance. Every verdict re-derives from frozen transcripts. No model is bare-ready." />
+<meta property="og:title" content="regulated-evals — Trustworthy-AI Scorecard (finance)" />
+<meta property="og:description" content="Regulation-anchored, calibration-validated, reproducible scorecards across 10 frontier and open-weight models. The headline: none is bare-ready for regulated finance." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preload" href="assets/data.json" as="fetch" crossorigin="anonymous" />
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand">shipbehaves<span class="dot">/</span>research</div>
+    <nav>
+      <a href="#result">result</a>
+      <a href="#calibration">calibration</a>
+      <a href="#crosswalk">regulation</a>
+      <a href="#method">method</a>
+      <a href="https://github.com/shipbehaves/regulated-evals" rel="me">code ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Trustworthy-AI Scorecard · finance · spine v0.3 · finance-v2</p>
+    <h1>Is any frontier model <em>ready</em> for regulated finance?</h1>
+    <p class="lede">
+      A regulation-anchored, calibration-validated, fully reproducible scorecard of <strong>model
+      behavior</strong> — not a system audit, not a certification. Ten models, two deployment
+      profiles, graded against preregistered bars drawn from the EU AI Act, FINMA, DORA, revFADP
+      and banking-secrecy law, with judgment cases scored by a cross-family LLM panel calibrated
+      to a human rater.
+    </p>
+    <p class="answer" id="hero-answer">Loading the verdicts…</p>
+    <div class="hero-links">
+      <a class="btn" href="https://github.com/shipbehaves/regulated-evals">Reproduce from source ↗</a>
+      <a class="btn ghost" href="#result">See the scorecard ↓</a>
+    </div>
+    <p class="repro-note">Every verdict on this page re-derives offline from the committed transcripts in the repo
+      (<code>make repro</code>) — this site only renders them.</p>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <section id="result">
+    <h2>The scorecard</h2>
+    <p class="section-lede">Each cell is one requirement for one model, on one deployment profile. The verdict is
+      <b>absolute</b> — measured against a preregistered floor/target, never a curve. A single Critical failure
+      means <b>Not-ready</b>: it cannot be averaged away. <b>Click any cell</b> to read the actual scenarios and
+      the model's own responses behind the verdict.</p>
+    <div class="controls" id="profile-toggle"></div>
+    <div id="heatmap" class="heatmap"></div>
+    <div id="legend" class="legend"></div>
+  </section>
+
+  <section id="bars">
+    <h2>Per-requirement detail</h2>
+    <p class="section-lede">Pass-rate per model for the selected requirement, with the preregistered <b>floor</b> and
+      <b>target</b> drawn. Above target = pass; between = partial; below floor = fail.</p>
+    <div class="controls" id="req-toggle"></div>
+    <div id="bars-chart"></div>
+  </section>
+
+  <section id="calibration">
+    <h2>Why trust the grader?</h2>
+    <p class="section-lede">The judgment cases are graded by a cross-family LLM panel — but only because it was first
+      <b>calibrated against a human rater</b> on a 150-item blind pack. Two independent humans agree with each other
+      far more than either agrees with the old rule grader, and the panel agrees with the human better than any single
+      rule. Nothing is graded by a layer that didn't clear a preregistered bar.</p>
+    <div id="alpha-chart"></div>
+    <h3 class="sub">Per-family deployment gate</h3>
+    <p class="section-lede small">Krippendorff's α of the panel vs the human rater, per judgment family, against the
+      preregistered bands. α is prevalence-fragile where one class is rare — read raw agreement + fail-recall alongside.</p>
+    <div id="family-gate"></div>
+  </section>
+
+  <section id="crosswalk">
+    <h2>Regulation cross-walk</h2>
+    <p class="section-lede">Every requirement is anchored to named regulation, and gates differently by deployment
+      profile (an anonymous public bot must refuse all personal data; an authenticated assistant may serve the
+      logged-in user but never another).</p>
+    <div id="crosswalk-table"></div>
+  </section>
+
+  <section id="method">
+    <h2>How it works</h2>
+    <div class="method-grid">
+      <div><h3>Regulation-anchored</h3><p>Each requirement carries an industry-specific regulatory anchor; thresholds
+        are derived from the law, not from a leaderboard curve.</p></div>
+      <div><h3>Preregistered</h3><p>Floor/target bars are fixed <em>before</em> a model is run, never tuned to a result;
+        each card stamps its thresholds, dataset version and run date.</p></div>
+      <div><h3>Reproducible</h3><p>Every verdict re-derives from a frozen, committed transcript at zero model cost
+        (<code>make repro</code>) — judge majorities re-derive from cached per-judge votes, offline.</p></div>
+      <div><h3>Honest</h3><p>No single 0–100 score. A readiness verdict is a structured signal, not regulatory
+        approval; a <code>✗</code> sizes the system wrap a deployer must build, it is not "a bad model".</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><strong>Model-behavior cards — not a conformity assessment, not legal advice.</strong> A green result is
+      model-layer only and does not certify a deployed system. Scenarios are synthetic.</p>
+    <p>Built by <a href="https://github.com/shipbehaves">@shipbehaves</a> ·
+      <a href="https://github.com/shipbehaves/regulated-evals">regulated-evals</a> ·
+      <a href="https://x.com/shipbehaves">x.com/shipbehaves</a></p>
+  </div>
+</footer>
+
+<div id="receipt" class="receipt-overlay" hidden>
+  <div class="receipt-panel" role="dialog" aria-modal="true">
+    <button class="receipt-close" aria-label="Close">×</button>
+    <div id="receipt-body"></div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
