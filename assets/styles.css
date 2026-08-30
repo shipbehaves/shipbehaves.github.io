@@ -203,3 +203,13 @@ footer.site p{margin:0 0 8px;max-width:70ch}
   section.block{padding:38px 0}
   .topnav{gap:14px;font-size:.82rem}
 }
+
+/* dual-destination project card: title links to the primary artifact, plinks to both */
+.project.dual{cursor:default}
+.project.dual .ptitle a{color:var(--ink);text-decoration:none}
+.project.dual:hover{border-color:var(--line)}
+.project.dual .ptitle a:hover{color:var(--accent)}
+.project .plinks{margin:14px 0 0;font-family:var(--mono);font-size:.8rem}
+.project .plinks a{color:var(--accent);text-decoration:none}
+.project .plinks a:hover{text-decoration:underline}
+.project .plinks .dot{color:var(--muted);margin:0 6px}
