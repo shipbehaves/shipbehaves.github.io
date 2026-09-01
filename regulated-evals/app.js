@@ -17,26 +17,52 @@ fetch("data.json").then(r => r.json()).then(d => { DATA = d; init(); })
   .catch(() => { const a = $("#hero-answer"); if (a) a.textContent = "Could not load data.json."; });
 
 function init() {
-  heroAnswer();
+  heroAnswer(); renderDates();
   toggles("#profile-toggle", DATA.profiles.map(p => [p.id, p.id]), profile, v => { profile = v; renderHeatmap(); });
   const gated = DATA.req_order.filter(r => !isContext(r));
   toggles("#req-toggle", gated.map(r => [r, `${r} · ${DATA.requirements[r].name}`]), reqSel, v => { reqSel = v; renderBars(); });
-  renderHeatmap(); renderBars(); renderAlpha(); renderFamilyGate(); renderCrosswalk(); wireReceipt();
+  renderHeatmap(); renderBars(); renderInterpretation(); renderAlpha(); renderFamilyGate(); renderCrosswalk(); wireReceipt();
+}
+const SEV_ORDER = ["blocker", "material", "advisory", "note"];
+const interpCell = (stem, prof, r) => (DATA.interpretation && DATA.interpretation.cells[`${stem}|${prof}|${r}`]) || null;
+const sevPill = (sev, provisional) =>
+  `<span class="sev-pill sev-${sev}">${sev}${provisional ? "*" : ""}</span>`;
+const confPill = c => c ? `<span class="conf-pill conf-${c}">${c}</span>` : "";
+
+function renderDates() {
+  const ds = DATA.dates ? Object.values(DATA.dates).map(d => d.access_date).filter(Boolean) : [];
+  if (!ds.length) return;
+  const uniq = [...new Set(ds)].sort();
+  const label = uniq.length === 1 ? uniq[0] : `${uniq[0]} to ${uniq[uniq.length - 1]}`;
+  const days = Math.floor((Date.now() - new Date(uniq[0])) / 86400000);
+  const stale = days > (DATA.staleness_window_days || 90);
+  const by = $(".byline");
+  if (!by) return;
+  const span = el("span", "", `<span class="b-sep">·</span> evaluated ${label}` +
+    (stale ? ` <span class="stale-pill">stale: over ${DATA.staleness_window_days} days old</span>` : ""));
+  by.appendChild(span);
 }
 const isContext = r => (DATA.thresholds["I-a"][r] || {}).context_only === true;
 
 function heroAnswer() {
   const rd = Object.values(DATA.readiness);
   const notReady = rd.filter(x => x.startsWith("Not-ready")).length;
+  const ready = rd.filter(x => x.startsWith("Ready")).length;
   let r6fail = 0, r6tot = 0;
   for (const m of DATA.models) for (const p of ["I-a", "II-a"]) {
     const c = DATA.cells[`${m.stem}|${p}|R6`]; if (c) { r6tot++; if (c.verdict === "fail") r6fail++; }
   }
+  const sums = DATA.interpretation ? DATA.interpretation.summaries : {};
+  const blockers = Object.values(sums).filter(s => s.highest_open_severity === "blocker").length;
+  const lead = ready === 0
+    ? `<b>No.</b> No model here clears the bar: <b>${notReady} of ${rd.length}</b> model×profile cards are Not-ready at the model layer` +
+      (rd.length - notReady ? ` (the rest are Conditional or Not-rateable)` : "") + `.`
+    : `<b>It depends.</b> Readiness varies at the model layer (${ready} of ${rd.length} cards Ready).`;
   $("#hero-answer").innerHTML =
-    `<b>No.</b> All ${DATA.models.length} models (frontier and open) are <b>Not-ready at the model layer</b> ` +
-    `(${notReady}/${rd.length} cards). The no-fabrication bar (R6) fails for <b>${r6fail} of ${r6tot}</b> model×profile cards; ` +
-    `the strongest, Claude Opus 4.8, misses by a single fabrication in 42 on a zero-tolerance bar. ` +
-    `The value is the <em>spread</em>: which requirement each model fails, and the system wrap it demands.`;
+    `${lead} The no-fabrication bar (R6) fails for <b>${r6fail} of ${r6tot}</b> cards` +
+    (blockers ? `; under the categorical risk interpretation, <b>${blockers}</b> cards carry a blocker-level finding` : "") +
+    `. The value is the <em>spread</em>: which requirement each model fails, how severe that is under binding law, ` +
+    `and the system wrap it demands.`;
 }
 
 function toggles(sel, opts, cur, onPick) {
@@ -88,7 +114,13 @@ function renderHeatmap() {
     `<span class="lg"><span class="swatch" style="background:var(--partial-bg)"></span> partial (≥ floor)</span>` +
     `<span class="lg"><span class="swatch" style="background:var(--fail-bg)"></span> fail (&lt; floor)</span>` +
     `<span class="lg"><span class="swatch" style="background:var(--context-bg)"></span> context-only</span>` +
-    `<span class="lg" style="margin-left:auto;font-style:italic">every model on ${profile}: Not-ready (model-layer)</span>`;
+    `<span class="lg" style="margin-left:auto;font-style:italic">${legendSummary()}</span>`;
+}
+function legendSummary() {
+  const vals = DATA.models.map(m => DATA.readiness[`${m.stem}|${profile}`]).filter(Boolean);
+  const kinds = [...new Set(vals.map(v => v.split(" (")[0]))];
+  return kinds.length === 1 ? `every model on ${profile}: ${vals[0]}`
+    : `readiness on ${profile} varies by model (see each card)`;
 }
 
 function renderBars() {
@@ -131,6 +163,35 @@ function renderBars() {
   if (cap) cap.innerHTML = `<b>Figure 2.</b> Per-model pass-rate for <b>${r} · ${DATA.requirements[r].name}</b> on ${profile} ` +
     `(${th.criticality || ""}). Floor ${th.floor ?? "n/a"}, target ${th.target ?? "n/a"}; shaded bands = fail / partial / pass.`;
 }
+
+function renderInterpretation() {
+  const host = $("#interp-table"); if (!host) return;
+  const itp = DATA.interpretation;
+  if (!itp || !Object.keys(itp.summaries).length) { host.innerHTML = `<p class="lede">Interpretation data not available in this build.</p>`; return; }
+  const tbl = el("table", "data");
+  tbl.innerHTML = `<thead><tr><th>Model</th><th>Profile</th><th>Highest open severity</th><th>Requirements</th><th>Weakest evidence behind it</th></tr></thead>`;
+  const tb = el("tbody");
+  DATA.models.forEach(m => PROFILES_LIST().forEach(p => {
+    const key = `${m.stem}|${p}`;
+    if (itp.suppressed[key]) {
+      tb.appendChild(el("tr", "", `<td>${m.label}</td><td>${p}</td><td colspan="3"><em>${itp.suppressed[key]}</em></td>`));
+      return;
+    }
+    const s = itp.summaries[key]; if (!s) return;
+    if (!s.highest_open_severity) {
+      tb.appendChild(el("tr", "", `<td>${m.label}</td><td>${p}</td><td>no open findings</td><td></td><td></td>`));
+      return;
+    }
+    const reqs = s.requirements || [];
+    const confs = reqs.map(r => itp.cells[`${key}|${r}`]).filter(Boolean);
+    const worst = confs.sort((a, b) => ["calibrated", "limited", "unvalidated"].indexOf(b.confidence) - ["calibrated", "limited", "unvalidated"].indexOf(a.confidence))[0];
+    tb.appendChild(el("tr", "",
+      `<td>${m.label}</td><td>${p}</td><td>${sevPill(s.highest_open_severity, confs.some(c => c.provisional))}</td>` +
+      `<td>${reqs.join(", ")}</td><td>${worst ? confPill(worst.confidence) + ` <small>${worst.evidence_basis.split(" — ")[0].split("—")[0]}</small>` : ""}</td>`));
+  }));
+  tbl.appendChild(tb); host.innerHTML = ""; host.appendChild(tbl);
+}
+const PROFILES_LIST = () => DATA.profiles.map(p => p.id);
 
 function renderAlpha() {
   const cal = DATA.calibration, rb = cal.rule_baseline || {};
@@ -190,11 +251,17 @@ function openReceipt(m, prof, r) {
   const scns = DATA.scenarios.filter(s => s.model === m.stem && s.profile === prof && s.requirement === r);
   scns.sort((a, b) => (a.verdict === "fail" ? 0 : 1) - (b.verdict === "fail" ? 0 : 1));
   const body = $("#receipt-body"); body.innerHTML = "";
+  const itp = interpCell(m.stem, prof, r);
   const head = el("div", "receipt-head");
   head.innerHTML = `<h3>${m.label} · ${r} ${req.name}</h3>` +
     `<div class="receipt-meta">${prof} (${DATA.profiles.find(p => p.id === prof).name}) · ${pct(c.rate)} pass (n=${c.n}) · ` +
-    `verdict <b class="scn-verdict ${c.verdict}">${c.verdict.toUpperCase()}</b> · ${c.criticality}</div>` +
-    `<p class="receipt-reg"><b>Test:</b> ${req.test}<br><b>Regulatory anchor:</b> ${req.reg}</p>`;
+    `verdict <b class="scn-verdict ${c.verdict}">${c.verdict.toUpperCase()}</b> · ${c.criticality}` +
+    (itp && itp.severity !== "none" ? ` · ${sevPill(itp.severity, itp.provisional)} ${confPill(itp.confidence)}` : "") + `</div>` +
+    `<p class="receipt-reg"><b>Test:</b> ${req.test}<br><b>Regulatory anchor:</b> ${req.reg}` +
+    (itp && itp.severity !== "none"
+      ? `<br><b>Risk interpretation:</b> ${itp.severity} (rule ${itp.rule_id}${itp.attaches_now ? ", binds the reference deployer today" : ", no binding obligation attaches"})` +
+        (itp.provisional ? `; evidence ${itp.confidence}: ${itp.evidence_basis}` : "")
+      : "") + `</p>`;
   body.appendChild(head);
   const show = scns.slice(0, 12);
   show.forEach(s => body.appendChild(scnCard(s)));
