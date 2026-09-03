@@ -162,6 +162,18 @@ table.data tbody tr:hover{background:var(--accent-weak)}
 .crit-tag{font-family:var(--mono);font-size:.72rem;padding:1px 7px;border-radius:5px;background:var(--context-bg);color:var(--muted)}
 .crit-tag.crit-Critical{background:var(--fail-bg);color:var(--fail)}
 
+/* risk-interpretation severity + evidence-confidence pills (same shape as gate pills) */
+.sev-pill{font-family:var(--mono);font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.sev-blocker{background:var(--fail-bg);color:var(--fail)}
+.sev-material{background:var(--partial-bg);color:var(--partial)}
+.sev-advisory{background:var(--context-bg);color:var(--muted)}
+.sev-note{background:var(--context-bg);color:var(--faint)}
+.conf-pill{font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:20px;white-space:nowrap;border:1px solid var(--line-strong);color:var(--muted)}
+.conf-calibrated{color:var(--pass);border-color:var(--pass)}
+.conf-unvalidated{color:var(--fail);border-color:var(--fail)}
+.stale-pill{font-family:var(--mono);font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--partial-bg);color:var(--partial);white-space:nowrap}
+#interp-table{overflow-x:auto}
+
 .method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
 .method-grid h3{font-size:1rem;margin:0 0 6px;color:var(--accent-ink);font-family:var(--mono);letter-spacing:-.01em}
 .method-grid p{margin:0;color:var(--muted);font-size:.94rem}

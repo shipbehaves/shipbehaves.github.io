@@ -4,9 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>regulated-evals · Trustworthy-AI Scorecard for frontier models in regulated finance</title>
-<meta name="description" content="A regulation-anchored, calibration-validated, reproducible trustworthiness scorecard of ten frontier and open-weight models in regulated finance. No model is bare-ready." />
+<meta name="description" content="A regulation-anchored, calibration-validated, reproducible trustworthiness scorecard of ten frontier and open-weight models in regulated finance, with a categorical risk interpretation per finding." />
 <meta property="og:title" content="regulated-evals · Trustworthy-AI Scorecard (finance)" />
-<meta property="og:description" content="Ten models graded against preregistered, law-derived bars; judgment scored by a cross-family panel calibrated to a human rater. None is bare-ready." />
+<meta property="og:description" content="Ten models graded against preregistered, law-derived bars; judgment scored by a cross-family panel calibrated to a human rater; each finding read into a categorical severity." />
 <meta property="og:type" content="article" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="stylesheet" href="/assets/styles.css" />
@@ -16,7 +16,7 @@
   <div class="col-wide">
     <div class="wordmark"><a href="/">shipbehaves<span class="sep">/</span>research</a></div>
     <nav class="topnav">
-      <a href="#result">result</a><a href="#calibration">calibration</a>
+      <a href="#result">result</a><a href="#interpretation">severity</a><a href="#calibration">calibration</a>
       <a href="#crosswalk">regulation</a><a href="#method">method</a>
       <a href="https://github.com/shipbehaves/regulated-evals">code ↗</a>
     </nav>
@@ -34,9 +34,9 @@
     <div class="abstract">
       <span class="lab">Abstract</span>
       We ask a narrow, falsifiable question: is any current language model ready, <em>out of the box</em>,
-      to behave safely in regulated finance? We grade ten models (three frontier-closed: Claude Opus 4.8,
-      GPT-5, Gemini 2.5 Pro; three frontier-open: DeepSeek-V3.1, Mistral-Large, Qwen-2.5-72B; and four small
-      open-weight baselines) across two deployment profiles, against <strong>preregistered</strong> floor/target
+      to behave safely in regulated finance? We grade ten models (four frontier-closed: Claude Opus 5, Claude Sonnet 5,
+      GPT-5, Gemini 2.5 Pro; three frontier-open: DeepSeek-V3.1, Mistral-Large, Qwen-2.5-72B; and three small
+      open-weight baselines, API-served) across two deployment profiles, against <strong>preregistered</strong> floor/target
       bars derived from the EU AI Act, FINMA guidance, DORA, the revised Swiss FADP and banking-secrecy law.
       Judgment cases (route-vs-advise, fabrication-vs-illustration, prompt-injection) are scored by a
       <strong>cross-family LLM panel</strong> that we first calibrate against a blind human rater. Every verdict
@@ -65,13 +65,27 @@
       <div id="heatmap" class="heatmap"></div>
       <div id="legend" class="legend"></div>
       <p class="figcap"><b>Figure 1.</b> Model × requirement readiness on the frozen finance-v2 corpus. Cell value is
-        the pass-rate; colour is the absolute verdict against the preregistered floor/target. Every model, on both
-        profiles, is Not-ready at the model layer.</p>
+        the pass-rate; colour is the absolute verdict against the preregistered floor/target.</p>
+    </div>
+  </section>
+
+  <section class="block" id="interpretation">
+    <h2><span class="secno">2</span> Risk interpretation</h2>
+    <p class="lede">A metric alone is not a decision. Each open finding above is read through a
+      <b>versioned, categorical decision table</b>: verdict and criticality plus whether the cited obligation
+      binds the reference deployer today, into a severity a deployment conversation can use. No numeric
+      weighting, no single blended number; the per-card summary is the <em>maximum</em> open severity, never a
+      count or an average. Evidence confidence never changes a severity; it says how much to trust the
+      measurement behind it (an asterisk marks provisional findings).</p>
+    <div class="figure"><div id="interp-table"></div>
+      <p class="figcap"><b>Table 1.</b> Highest open severity per model and profile, with the weakest evidence
+        tier among the findings at that level. Methodology: <code>spine/interpretation.md</code> in the repo;
+        severity vocabulary: blocker · material · advisory · note.</p>
     </div>
   </section>
 
   <section class="block" id="bars">
-    <h2><span class="secno">2</span> Per-requirement detail</h2>
+    <h2><span class="secno">3</span> Per-requirement detail</h2>
     <p class="lede">Pass-rate per model for one requirement, against the preregistered bars. The shaded bands mark
       the <b>fail</b> / <b>partial</b> / <b>pass</b> zones; the dashed lines are the floor and target.</p>
     <div class="figure">
@@ -82,7 +96,7 @@
   </section>
 
   <section class="block" id="calibration">
-    <h2><span class="secno">3</span> Why trust the grader?</h2>
+    <h2><span class="secno">4</span> Why trust the grader?</h2>
     <p class="lede">Judgment cases are graded by an LLM panel, but only because it first <b>cleared a preregistered
       bar against a human rater</b> on a 150-item blind pack. Two independent humans agree with each other far more
       than either agrees with the old rule grader: the rule was the outlier, which is the empirical case for the panel.</p>
@@ -94,22 +108,22 @@
     <p class="lede small">Panel-vs-human α per judgment family against the preregistered bands. α is prevalence-fragile
       where one class is rare; read raw agreement and fail-recall alongside it.</p>
     <div class="figure"><div id="family-gate"></div>
-      <p class="figcap"><b>Table 1.</b> Preregistered per-family gate: α ≥ 0.80 publish · 0.667–0.80 tentative · &lt; 0.667 do-not-deploy.</p>
+      <p class="figcap"><b>Table 2.</b> Preregistered per-family gate: α ≥ 0.80 publish · 0.667–0.80 tentative · &lt; 0.667 do-not-deploy.</p>
     </div>
   </section>
 
   <section class="block" id="crosswalk">
-    <h2><span class="secno">4</span> Regulation cross-walk</h2>
+    <h2><span class="secno">5</span> Regulation cross-walk</h2>
     <p class="lede">Every requirement is anchored to named regulation and gates differently by deployment profile:
       an anonymous public bot must refuse all personal data; an authenticated assistant may serve the logged-in user
       but never another.</p>
     <div class="figure"><div id="crosswalk-table"></div>
-      <p class="figcap"><b>Table 2.</b> Requirement → model-behavior test → per-profile criticality → regulatory anchor.</p>
+      <p class="figcap"><b>Table 3.</b> Requirement → model-behavior test → per-profile criticality → regulatory anchor.</p>
     </div>
   </section>
 
   <section class="block" id="method">
-    <h2><span class="secno">5</span> How it works</h2>
+    <h2><span class="secno">6</span> How it works</h2>
     <div class="method-grid">
       <div><h3>regulation-anchored</h3><p>Each requirement carries an industry-specific regulatory anchor; bars come
         from the law, not from a leaderboard curve.</p></div>
@@ -129,7 +143,7 @@
       model-layer only and does not certify a deployed system. All scenarios are synthetic.</p>
     <p><a href="/">← shipbehaves / research</a> ·
       <a href="https://github.com/shipbehaves/regulated-evals">code</a> ·
-      <a href="https://x.com/shipbehaves">x.com/shipbehaves</a></p>
+      <a href="https://x.com/yavuzai">x.com/yavuzai</a></p>
   </div>
 </footer>
 
