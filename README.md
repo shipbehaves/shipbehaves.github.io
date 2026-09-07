@@ -8,11 +8,12 @@ current frontier model ready, out of the box, for regulated finance?*
 
 ## What you're looking at
 
-Ten models (Claude Opus 4.8, GPT-5, Gemini 2.5 Pro, DeepSeek-V3.1, Mistral-Large, Qwen-2.5-72B,
-and four small open-weight models), graded on two deployment profiles against **preregistered,
-regulation-anchored bars** — judgment cases scored by a cross-family LLM panel that was first
-calibrated to a human rater. The headline: **no model is bare-ready.** The value is the *spread*
-— which requirement each model fails, and the system wrap a deployer must build around it.
+Ten models (Claude Opus 5, Claude Sonnet 5, GPT-5, Gemini 2.5 Pro, DeepSeek-V3.1, Mistral-Large,
+Qwen-2.5-72B, and three small open-weight models), graded on two deployment profiles against
+**preregistered, regulation-anchored bars**, with judgment cases scored by a cross-family LLM
+panel that was first calibrated to a human rater. The headline is that **no model is bare-ready.**
+The value is the *spread*, which requirement each model fails, and the system wrap a deployer must
+build around it.
 
 The dashboard is deliberately honest: no single 0–100 score, readiness foregrounded, and every
 cell is clickable down to the **actual model response and the three judges' votes** behind the
