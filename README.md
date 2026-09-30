@@ -38,4 +38,4 @@ These are **model-behavior cards — not a conformity assessment, not certificat
 advice.** A green result is model-layer only and does not certify a deployed system. Scenarios
 are synthetic.
 
-Built by [@shipbehaves](https://github.com/shipbehaves) · [x.com/shipbehaves](https://x.com/shipbehaves)
+Built by [@shipbehaves](https://github.com/shipbehaves) · [x.com/yavuzai](https://x.com/yavuzai)
